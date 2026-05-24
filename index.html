@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vintage Memories</title>
+  <style>
+    /* --- VINTAGE CORE STYLES --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #241a0f;
+      background-image: radial-gradient(circle, #3a2a18 0%, #130d07 100%);
+      font-family: 'Georgia', serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #4a3525;
+    }
+
+    /* --- SMOOTH TRANSITION ENGINE --- */
+    .screen {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                  transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                  visibility 0.8s;
+      transform: scale(1);
+    }
+    .hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: scale(0.95);
+    }
+
+    /* --- SCREEN 1: REALISTIC HEAVY FOG --- */
+    #fog-screen {
+      background: #0b0805;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .fog-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      filter: blur(30px);
+    }
+    .fog-layer {
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background: 
+        radial-gradient(circle at 30% 40%, rgba(240, 235, 220, 0.28) 0%, transparent 40%),
+        radial-gradient(circle at 70% 60%, rgba(225, 215, 195, 0.25) 0%, transparent 45%),
+        radial-gradient(circle at 50% 30%, rgba(250, 245, 230, 0.2) 0%, transparent 35%);
+      animation: heavyFogDrift 25s infinite linear;
+    }
+    .fog-layer.secondary {
+      animation: heavyFogDrift 18s infinite linear reverse;
+      opacity: 0.8;
+    }
+    @keyframes heavyFogDrift {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(5%, 5%) rotate(3deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+    .intro-prompt {
+      color: #eae1d4;
+      font-style: italic;
+      letter-spacing: 3px;
+      font-size: 1.2rem;
+      z-index: 11;
+      text-shadow: 0 0 15px rgba(255,255,255,0.4);
+      animation: breathing 2.5s infinite ease-in-out;
+    }
+    @keyframes breathing {
+      0%, 100% { opacity: 0.3; transform: scale(0.98); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+
+    /* --- SCREEN 2: CARVED BOX --- */
+    #box-screen { z-index: 5; }
+    
+    .vintage-box {
+      width: 300px;
+      height: 220px;
+      background: #a67c52; 
+      border-radius: 28px; 
+      border: 10px solid #8e653c;
+      box-shadow: 
+        inset 0 0 25px rgba(60, 40, 20, 0.4),
+        0 25px 45px rgba(0,0,0,0.6),
+        0 0 0 4px #bfa281;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .vintage-box:hover {
+      transform: scale(1.04);
+    }
+    .carving {
+      position: absolute;
+      border: 3px dashed #6d4a27;
+      top: 16px; left: 16px; right: 16px; bottom: 16px;
+      border-radius: 18px; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .carving::before {
+      content: '✿';
+      font-size: 3.5rem;
+      color: #6d4a27;
+      opacity: 0.85;
+      text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.2);
+    }
+    .box-latch {
+      position: absolute;
+      top: -5px; left: 50%;
+      transform: translateX(-50%);
+      width: 44px; height: 18px;
+      background: #d4af37;
+      border-radius: 6px 6px 0 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* --- SCREEN 3: TURNTABLE & VINYL --- */
+    .turntable-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+    .player-base {
+      width: 340px;
+      height: 340px;
+      background: #b5895b;
+      border-radius: 50px; 
+      box-shadow: inset 0 0 35px rgba(70, 45, 25, 0.35), 0 20px 40px rgba(0,0,0,0.5);
+      border: 12px solid #996e42;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .vinyl-grooves {
+      width: 270px;
+      height: 270px;
+      background: radial-gradient(circle, #222 2px, #111 4px, #222 7px, #111 20px, #2b2b2b 21px, #111 40px, #222 60px, #111 80px, #222 100px, #111 133px, #eed0ad 134px);
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.55);
+    }
+    .vinyl-grooves::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(
+        transparent 0deg, 
+        rgba(255,255,255,0.14) 35deg, 
+        transparent 70deg, 
+        transparent 180deg, 
+        rgba(255,255,255,0.14) 215deg, 
+        transparent 250deg
+      );
+      z-index: 2;
+    }
+    .vinyl-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 86px; height: 86px;
+      background: #e6d3be;
+      border-radius: 50%;
+      border: 2px dashed #996e42;
+      z-index: 3;
+    }
+    .vinyl-center::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px; height: 8px;
+      background: #2b2b2b;
+      border-radius: 50%;
+    }
+
+    .tonearm {
+      position: absolute;
+      top: 25px; right: 25px;
+      width: 20px; height: 140px;
+      background: #c2a672;
+      border-radius: 10px;
+      transform-origin: top center;
+      transform: rotate(12deg);
+      transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+      z-index: 4;
+      box-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+    }
+    .tonearm.playing {
+      transform: rotate(34deg);
+    }
+
+    .spinning {
+      animation: spin 3s linear infinite;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .vintage-btn {
+      background: #996e42;
+      color: #fff9ed;
+      border: none;
+      padding: 14px 32px;
+      font-family: 'Georgia', serif;
+      font-size: 1rem;
+      font-style: italic;
+      border-radius: 30px; 
+      cursor: pointer;
+      box-shadow: 0 5px 0 #6d4a27, 0 8px 15px rgba(0,0,0,0.35);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .vintage-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #6d4a27, 0 3px 7px rgba(0,0,0,0.4);
+    }
+    
+    .vintage-btn.active-playing {
+      background: #73512f;
+      color: #d1c4b2;
+      box-shadow: 0 2px 0 #4a3118, 0 4px 8px rgba(0,0,0,0.2);
+      transform: translateY(3px);
+      cursor: default;
+    }
+
+    /* --- UPDATED RESPONSIVE VINTAGE PAPERS --- */
+    .letter-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      max-height: 90vh; /* Keeps container safely inside view boundaries */
+      width: 90%;
+      max-width: 360px;
+    }
+    
+    .vintage-paper {
+      width: 100%;
+      /* Removed rigid max/min limits and harsh clip-paths */
+      background: #f7edd3;
+      background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
+      padding: 35px 28px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.45);
+      position: relative;
+      border: 1px solid #eadebe;
+      
+      /* Subtle deckle edge variation using alternating border radii */
+      border-radius: 8px 23px 12px 27px / 21px 11px 24px 9px;
+      transform: rotate(-1deg);
+      
+      /* Scrollbar settings if text gets completely massive */
+      max-height: 65vh; 
+      overflow-y: auto;
+      
+      /* Custom vintage scrollbar design */
+      scrollbar-width: thin;
+      scrollbar-color: #996e42 transparent;
+    }
+    
+    /* Scrollbar adjustments for webkit engines */
+    .vintage-paper::-webkit-scrollbar {
+      width: 5px;
+    }
+    .vintage-paper::-webkit-scrollbar-thumb {
+      background-color: #996e42;
+      border-radius: 10px;
+    }
+    
+    .vintage-text {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+      line-height: 1.6;
+      color: #543d2b;
+      text-align: center;
+      word-wrap: break-word; /* Ensures long continuous words don't break design bounds */
+    }
+    .vintage-text h2 {
+      font-family: 'Georgia', serif;
+      font-style: italic;
+      margin-bottom: 18px;
+      color: #3a2a1b;
+    }
+
+    .image-gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 15px;
+      align-items: center;
+    }
+    .vintage-photo {
+      width: 100%;
+      max-width: 220px;
+      height: auto;
+      object-fit: cover;
+      border: 8px solid #fffdfa;
+      box-shadow: 0 5px 12 rgba(0,0,0,0.25);
+      filter: sepia(0.5) contrast(0.95) brightness(0.95);
+      transform: rotate(2.5deg);
+    }
+    .vintage-photo:nth-child(2) {
+      transform: rotate(-3.5deg);
+    }
+
+    #youtube-audio-player {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="youtube-audio-player"></div>
+
+  <!-- STEP 1: HEAVY MIST/FOG INTRO -->
+  <div id="fog-screen" class="screen" onclick="goToBox()">
+    <div class="fog-container">
+      <div class="fog-layer"></div>
+      <div class="fog-layer secondary"></div>
+    </div>
+    <div class="intro-prompt">Tap to part the fog...</div>
+  </div>
+
+  <!-- STEP 2: OPENING WOODEN BOX -->
+  <div id="box-screen" class="screen hidden" onclick="openBox()">
+    <div class="vintage-box">
+      <div class="box-latch"></div>
+      <div class="carving"></div>
+    </div>
+  </div>
+
+  <!-- STEP 3: TURNTABLE SYSTEM -->
+  <div id="turntable-screen" class="screen hidden">
+    <div class="turntable-container">
+      <div class="player-base">
+        <div id="tonearm" class="tonearm"></div>
+        <div id="vinyl" class="vinyl-grooves">
+          <div class="vinyl-center"></div>
+        </div>
+      </div>
+      <button id="play-btn" class="vintage-btn" onclick="handlePlayInteraction()">Play Record</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: MEMORY NOTE 1 (Add as much text as you want here!) -->
+  <div id="paper1-screen" class="screen hidden">
+    <div class="letter-container">
+      <div class="vintage-paper">
+        <div class="vintage-text">
+          <h2>A Forgotten Note</h2>
+          <p>Jam, having you are the most unexpected thing that happened to me yet the happiestand the brightest things of all.
+You don't know how i pray this thing between us too last. how i wanted you ti be my last.
+Most people would leave and dissapointed when theyre relationship are very hard and confusing, when they already see the bad things in their partner. but as for me, the more i know you the more i love you. i may sometimes doubt about you because of the trauma's you didnt even made. im really sorry for that. there may be a times when i confused, when i didn't felt your love.
+when i needed more, it jjst because i don't wanna lose myself, for you.</p>
+          <br>
+          <p>Hindi ko kayang makita ka sa ibang tao na hindi ka kayang pakinggan at intindihin.
+mahal kita Jam, walang nagbago.</p>
+        </div>
+      </div>
+      <button class="vintage-btn" onclick="goToNextPaper()">Next Page</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: MEMORY NOTE 2 WITH IMAGES -->
+  <div id="paper2-screen" class="screen hidden">
+    <div class="letter-container">
+      <div class="vintage-paper">
+        <div class="vintage-text">
+          <h2>Captured Moments</h2>
+          <div class="image-gallery">
+            <img src="photo1.jpeg" alt="Vintage Image 1" class="vintage-photo">
+            <img src="photo2.jpeg" alt="Vintage Image 2" class="vintage-photo">
+          </div>
+        </div>
+      </div>
+      <button class="vintage-btn" onclick="resetToTurntable()">Done</button>
+    </div>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <script>
+    let audioPlayer;
+    let isMusicTriggered = false;
+
+    function onYouTubeIframeAPIReady() {
+      audioPlayer = new YT.Player('youtube-audio-player', {
+        height: '0',
+        width: '0',
+        videoId: 'Z4NnexiQtsY', 
+        playerVars: {
+          'playsinline': 1,
+          'loop': 1,
+          'playlist': 'Z4NnexiQtsY' 
+        }
+      });
+    }
+
+    function switchScreen(fromId, toId) {
+      document.getElementById(fromId).classList.add('hidden');
+      document.getElementById(toId).classList.remove('hidden');
+    }
+
+    function goToBox() {
+      switchScreen('fog-screen', 'box-screen');
+    }
+
+    function openBox() {
+      switchScreen('box-screen', 'turntable-screen');
+    }
+
+    function handlePlayInteraction() {
+      if (isMusicTriggered) {
+        switchScreen('turntable-screen', 'paper1-screen');
+      } else {
+        startPlaybackSequence();
+      }
+    }
+
+    function startPlaybackSequence() {
+      const vinyl = document.getElementById('vinyl');
+      const tonearm = document.getElementById('tonearm');
+      const btn = document.getElementById('play-btn');
+
+      vinyl.classList.add('spinning');
+      tonearm.classList.add('playing');
+      
+      btn.innerText = "Playing...";
+      btn.classList.add('active-playing');
+
+      if (audioPlayer && typeof audioPlayer.playVideo === 'function') {
+        audioPlayer.playVideo();
+        isMusicTriggered = true;
+      }
+
+      setTimeout(() => {
+        switchScreen('turntable-screen', 'paper1-screen');
+      }, 3200); 
+    }
+
+    function goToNextPaper() {
+      switchScreen('paper1-screen', 'paper2-screen');
+    }
+
+    function resetToTurntable() {
+      switchScreen('paper2-screen', 'turntable-screen');
+      
+      setTimeout(() => {
+        const btn = document.getElementById('play-btn');
+        btn.innerText = "View Memories";
+        btn.classList.remove('active-playing'); 
+      }, 800);
+    }
+  </script>
+</body>
+</html>
