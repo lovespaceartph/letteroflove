@@ -322,19 +322,25 @@
       transform: rotate(-3.5deg);
     }
 
-    /* Completely invisible local player element */
-    #local-audio-player {
-      display: none;
+    /* INVISIBLE VIDEO ENGINE (STILL PLAYS AUDIO) */
+    #hidden-video-player {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
 
-  <!-- NATIVE HTML5 AD-FREE MUSIC PLAYER -->
-  <audio id="local-audio-player" loop>
-    <source src="music.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
+  <!-- INVISIBLE VIDEO ELEMENT -->
+  <video id="hidden-video-player" loop playsinline>
+    <source src="music.mp4" type="video/mp4">
+    Your browser does not support the video element.
+  </video>
 
   <!-- STEP 1: HEAVY MIST/FOG INTRO -->
   <div id="fog-screen" class="screen" onclick="goToBox()">
@@ -372,14 +378,11 @@
       <div class="vintage-paper">
         <div class="vintage-text">
           <h2>Dearest Jam,</h2>
-          <p>      Having you is the most unexpected thing that has happened to me, yet it is the happiest and the brightest thing of all. You don't know how I pray for this thing between the two of us to last, and how much I want you to be my last. 
-Most people would leave and get disappointed when their relationship is very hard and confusing, or when they already see the bad things in their partner. But as for me, the more I know you, the more I love you. I may sometimes doubt you because of traumas you didn't even cause, and I'm really sorry for that. There may be times when I am confused, or when I don't feel your love when I need it most, but it’s just because I don't want to lose myself, for you.
-           Hindi ko kayang makita ka sa ibang tao na hindi ka kayang pakinggan at intindihin. 
-</p>
+          <p>Having you is the most unexpected thing that has happened to me, yet it is the happiest and the brightest thing of all. You don't know how I pray for this thing between the two of us to last, and how much I want you to be my last.
+Most people would leave and get disappointed when their relationship is very hard and confusing, or when they already see the bad things in their partner. But as for me, the more I know you, the more I love you. I may sometimes doubt you because of traumas you didn't even cause, and I'm really sorry for that. There may be times when I am confused, or when I don't feel your love when I need it most, but it’s just because I don't want to lose myself, for you.</p>
+          
           <br>
-          <p>Hindi ko kayang makita ka sa ibang tao na hindi ka kayang pakinggan at intindihin. Mahal kita Jam, walang nagbago.</p>
-           <br>
- <p>Truly Yours, Thea</p>
+<p>Yours Truly, Thea.</p>
         </div>
       </div>
       <button class="vintage-btn" onclick="goToNextPaper()">Next Page</button>
@@ -403,7 +406,7 @@ Most people would leave and get disappointed when their relationship is very har
   </div>
 
   <script>
-    const audioPlayer = document.getElementById('local-audio-player');
+    const videoPlayer = document.getElementById('hidden-video-player');
     let isMusicTriggered = false;
 
     function switchScreen(fromId, toId) {
@@ -438,10 +441,10 @@ Most people would leave and get disappointed when their relationship is very har
       btn.innerText = "Playing...";
       btn.classList.add('active-playing');
 
-      // Native audio trigger (completely local, no ads)
-      if (audioPlayer) {
-        audioPlayer.play().catch(error => {
-          console.log("Playback protected or restricted by browser settings:", error);
+      // Invisible video play trigger (zero lag, zero ads)
+      if (videoPlayer) {
+        videoPlayer.play().catch(error => {
+          console.log("Video playback handled for mobile/desktop browser policies:", error);
         });
         isMusicTriggered = true;
       }
