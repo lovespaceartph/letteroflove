@@ -45,7 +45,7 @@
       transform: scale(0.95);
     }
 
-    /* --- SCREEN 1: REALISTIC HEAVY FOG --- */
+    /* --- SCREEN 1: HEAVY FOG --- */
     #fog-screen {
       background: #0b0805;
       cursor: pointer;
@@ -251,41 +251,33 @@
       cursor: default;
     }
 
-    /* --- UPDATED RESPONSIVE VINTAGE PAPERS --- */
+    /* --- RESPONSIVE VINTAGE PAPERS --- */
     .letter-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 20px;
-      max-height: 90vh; /* Keeps container safely inside view boundaries */
+      max-height: 90vh;
       width: 90%;
       max-width: 360px;
     }
     
     .vintage-paper {
       width: 100%;
-      /* Removed rigid max/min limits and harsh clip-paths */
       background: #f7edd3;
       background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
       padding: 35px 28px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.45);
       position: relative;
       border: 1px solid #eadebe;
-      
-      /* Subtle deckle edge variation using alternating border radii */
       border-radius: 8px 23px 12px 27px / 21px 11px 24px 9px;
       transform: rotate(-1deg);
-      
-      /* Scrollbar settings if text gets completely massive */
       max-height: 65vh; 
       overflow-y: auto;
-      
-      /* Custom vintage scrollbar design */
       scrollbar-width: thin;
       scrollbar-color: #996e42 transparent;
     }
     
-    /* Scrollbar adjustments for webkit engines */
     .vintage-paper::-webkit-scrollbar {
       width: 5px;
     }
@@ -300,7 +292,7 @@
       line-height: 1.6;
       color: #543d2b;
       text-align: center;
-      word-wrap: break-word; /* Ensures long continuous words don't break design bounds */
+      word-wrap: break-word;
     }
     .vintage-text h2 {
       font-family: 'Georgia', serif;
@@ -322,7 +314,7 @@
       height: auto;
       object-fit: cover;
       border: 8px solid #fffdfa;
-      box-shadow: 0 5px 12 rgba(0,0,0,0.25);
+      box-shadow: 0 5px 12px rgba(0,0,0,0.25);
       filter: sepia(0.5) contrast(0.95) brightness(0.95);
       transform: rotate(2.5deg);
     }
@@ -330,18 +322,19 @@
       transform: rotate(-3.5deg);
     }
 
-    #youtube-audio-player {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      opacity: 0;
-      pointer-events: none;
+    /* Completely invisible local player element */
+    #local-audio-player {
+      display: none;
     }
   </style>
 </head>
 <body>
 
-  <div id="youtube-audio-player"></div>
+  <!-- NATIVE HTML5 AD-FREE MUSIC PLAYER -->
+  <audio id="local-audio-player" loop>
+    <source src="music.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 
   <!-- STEP 1: HEAVY MIST/FOG INTRO -->
   <div id="fog-screen" class="screen" onclick="goToBox()">
@@ -373,19 +366,20 @@
     </div>
   </div>
 
-  <!-- STEP 4: MEMORY NOTE 1 (Add as much text as you want here!) -->
+  <!-- STEP 4: MEMORY NOTE 1 -->
   <div id="paper1-screen" class="screen hidden">
     <div class="letter-container">
       <div class="vintage-paper">
         <div class="vintage-text">
-          <h2> Dearest, Jam </h2>
-          <p>Having you are the most unexpected thing that happened to me yet the happiest and the brightest things of all.
-You don't know how i pray this thing between us too last. how i wanted you ti be my last.
-Most people would leave and dissapointed when theyre relationship are very hard and confusing, when they already see the bad things in their partner. but as for me, the more i know you the more i love you. i may sometimes doubt about you because of the trauma's you didnt even made. im really sorry for that. there may be a times when i confused, when i didn't felt your love.
-when i needed more, it jjst because i don't wanna lose myself, for you.</p>
+          <h2>Dearest Jam,</h2>
+          <p>      Having you is the most unexpected thing that has happened to me, yet it is the happiest and the brightest thing of all. You don't know how I pray for this thing between the two of us to last, and how much I want you to be my last. 
+Most people would leave and get disappointed when their relationship is very hard and confusing, or when they already see the bad things in their partner. But as for me, the more I know you, the more I love you. I may sometimes doubt you because of traumas you didn't even cause, and I'm really sorry for that. There may be times when I am confused, or when I don't feel your love when I need it most, but it’s just because I don't want to lose myself, for you.
+           Hindi ko kayang makita ka sa ibang tao na hindi ka kayang pakinggan at intindihin. 
+</p>
           <br>
- <p>Truly Yours, Thea.</p>
- 
+          <p>Hindi ko kayang makita ka sa ibang tao na hindi ka kayang pakinggan at intindihin. Mahal kita Jam, walang nagbago.</p>
+           <br>
+ <p>Truly Yours, Thea</p>
         </div>
       </div>
       <button class="vintage-btn" onclick="goToNextPaper()">Next Page</button>
@@ -408,24 +402,9 @@ when i needed more, it jjst because i don't wanna lose myself, for you.</p>
     </div>
   </div>
 
-  <script src="https://www.youtube.com/iframe_api"></script>
-
   <script>
-    let audioPlayer;
+    const audioPlayer = document.getElementById('local-audio-player');
     let isMusicTriggered = false;
-
-    function onYouTubeIframeAPIReady() {
-      audioPlayer = new YT.Player('youtube-audio-player', {
-        height: '0',
-        width: '0',
-        videoId: 'Z4NnexiQtsY', 
-        playerVars: {
-          'playsinline': 1,
-          'loop': 1,
-          'playlist': 'Z4NnexiQtsY' 
-        }
-      });
-    }
 
     function switchScreen(fromId, toId) {
       document.getElementById(fromId).classList.add('hidden');
@@ -459,8 +438,11 @@ when i needed more, it jjst because i don't wanna lose myself, for you.</p>
       btn.innerText = "Playing...";
       btn.classList.add('active-playing');
 
-      if (audioPlayer && typeof audioPlayer.playVideo === 'function') {
-        audioPlayer.playVideo();
+      // Native audio trigger (completely local, no ads)
+      if (audioPlayer) {
+        audioPlayer.play().catch(error => {
+          console.log("Playback protected or restricted by browser settings:", error);
+        });
         isMusicTriggered = true;
       }
 
